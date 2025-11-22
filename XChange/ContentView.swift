@@ -66,7 +66,7 @@ struct ContentView: View {
                             
                             Spacer()
                             
-                            Text("\(currency) \(formatRate(rate))")
+                            Text("\(currencySymbol(for: currency))\(formatRate(rate))")
                                 .font(.system(size: 16))
                                 .foregroundColor(.primary)
                         }
@@ -84,7 +84,7 @@ struct ContentView: View {
                         .font(.caption2)
                         .foregroundColor(.gray)
                     
-                    Text("Rates by Exchange Rate API")
+                    Link("Rates by Exchange Rate API", destination: URL(string: "https://www.exchangerate-api.com")!)
                         .font(.caption)
                         .foregroundColor(.green)
                     
@@ -105,8 +105,12 @@ struct ContentView: View {
                             .padding()
                     }
                     
-                    Text("Rates by Exchange Rate API")
+                    Link("Rates by Exchange Rate API", destination: URL(string: "https://www.exchangerate-api.com")!)
                         .font(.caption)
+                        .foregroundColor(.green)
+                    
+                    Link("TERMS OF SERVICE", destination: URL(string: "https://www.exchangerate-api.com/terms")!)
+                        .font(.caption2)
                         .foregroundColor(.green)
                 }
                 .padding(.bottom, 16)
@@ -115,10 +119,7 @@ struct ContentView: View {
         .onAppear {
             if let cachedData = exchangeHelper.loadCachedRates() {
                 exchangeInfo = cachedData
-            } else {
-                Task {
-                    await loadRates()
-                }
+                baseCurrency = cachedData.baseCode
             }
         }
     }
@@ -172,6 +173,17 @@ struct ContentView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy 'at' HH:mm:ss z"
         return formatter.string(from: date)
+    }
+    
+    func currencySymbol(for code: String) -> String {
+        let locale = Locale.availableIdentifiers
+            .map { Locale(identifier: $0) }
+            .first { $0.currency?.identifier == code }
+        
+        if let symbol = locale?.currencySymbol, symbol != code {
+            return symbol + " "
+        }
+        return code + " "
     }
 }
 

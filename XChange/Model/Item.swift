@@ -7,6 +7,9 @@
 import Foundation
 
 struct ExchangeInfo: Codable {
-    var conversionRates: [String: Double]
+    var result: String
+    var baseCode: String
+    var timeLastUpdateUnix: TimeInterval
+    var rates: [String: Double]
 }
 

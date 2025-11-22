@@ -31,6 +31,7 @@ extension FileManager {
         
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
+        encoder.keyEncodingStrategy = .convertToSnakeCase
         
         if let data = try? encoder.encode(info) {
             try? data.write(to: fileURL)
